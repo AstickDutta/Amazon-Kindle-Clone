@@ -14,4 +14,7 @@ router.get("/test-me", function (req, res) {
 // ------------ Creating user ------------------------
 router.post("/register",userController.registerUser )
 
+router.post("/login", userController.userLogin)
+
+
 module.exports = router
