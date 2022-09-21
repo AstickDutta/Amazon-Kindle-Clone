@@ -15,6 +15,9 @@ mongoose.connect("mongodb+srv://kusum_99:9vJ9mxlJH1cYZ1oO@cluster0.jelghm1.mongo
 .catch ( err => console.log(err) )
 
 app.use('/', route);
+app.use((req, res, next) => {
+    res.status(400).send({ status: false, error: "Enter proper Url" });
+})
 
 
 app.listen(process.env.PORT || 3000, function () {

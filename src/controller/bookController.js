@@ -1,5 +1,6 @@
 const mongosse = require('mongoose')
 const bookModel = require('../model/bookModel')
+const userModel = require('../model/userModel')
 const reviewModel = require("../model/reviewModel")
 const { isValidName, isValidBody, isValidId, isValidISBN, isValidReleasedAt } = require("../validators/validator");
 
@@ -7,29 +8,24 @@ const { isValidName, isValidBody, isValidId, isValidISBN, isValidReleasedAt } = 
 
 // ------------------- creating book -----------------------------------
 const createBook = async (req, res) => {
-
     try {
-
         // Validating request body
 
         if (!isValidBody(req.body)) return res.status(400).send({ status: false, message: "All fields are required" });
 
         let { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = req.body;
 
-
         // title validation
 
         if (!title || !isValidName(title.trim())) return res.status(400).send({ status: false, message: 'title is required and should be a valid format' });
-
         let checkTitle = await bookModel.findOne({ title: title });
         if (checkTitle) return res.status(409).send({ status: false, message: `'${title}' is already taken` });
 
 
         // excerpt validation
 
-        if (!excerpt || !isValidName(excerpt.trim())) 
-        return res.status(400).send({ status: false, message: 'excerpt is required and should be a valid format' });
-
+        if (!excerpt || !isValidName(excerpt.trim()))
+            return res.status(400).send({ status: false, message: 'excerpt is required and should be a valid format' });
 
         // userId validtion
 
@@ -69,7 +65,7 @@ const createBook = async (req, res) => {
             return res.status(400).send({ status: false, message: "Please enter subcategory" });
 
         if (!isValidName(subcategory))
- return res.status(400).send({ status: false, message: "Please enter valid subcategory" });
+            return res.status(400).send({ status: false, message: "Please enter valid subcategory" });
 
         // released date validation
         if (!releasedAt)
@@ -80,9 +76,7 @@ const createBook = async (req, res) => {
 
         // creating new book
         const savedData = await bookModel.create(req.body);
-        res.status(201).send({ status: true, message: "Sucessfully created", data: savedData });
-
-
+        return res.status(201).send({ status: true, message: "Sucessfully created", data: savedData });
 
     } catch (err) {
         return res.status(500).send({ status: false, message: err.message });
@@ -90,7 +84,7 @@ const createBook = async (req, res) => {
 }
 
 
-//Get All Books==================================by kusum============================================
+//Get All Books==================================by kusum ============================================
 const getAllBooks = async function (req, res) {
     try {
         let field = req.query;
@@ -103,7 +97,7 @@ const getAllBooks = async function (req, res) {
             if (userId.length === 0) {
                 return res.status(400).send({ status: false, message: "UserId should  be present" })
             }
-            if (!mongoose.Types.ObjectId.isValid(userId)) {
+            if (!isValidId(userId)) {
                 return res.status(404).send({ status: false, message: "UserId is not valid" })
             }
         }
@@ -175,26 +169,26 @@ const bookById = async function (req, res) {
 
 
 // ----------------------put api ------------------------------------------------
-const updateBook = async function(req,res){
-    try{
+const updateBook = async function (req, res) {
+    try {
         const bookId = req.params.bookId;
         if (!isValidId(bookId)) {
-          return res.status(400).send({ status: false, message: "Invalid book id" })
+            return res.status(400).send({ status: false, message: "Invalid book id" })
         }
 
-        let book=await bookModel.findOne({_id:bookId})
-        if(!book) return res.status(400).send({status:false, message:"No Books exits with this bookId"})
-        
+        let book = await bookModel.findOne({ _id: bookId })
+        if (!book) return res.status(400).send({ status: false, message: "No Books exits with this bookId" })
+
 
         const reqBody = req.body;
-        const { title, excerpt, releasedAt,ISBN } = reqBody;
+        const { title, excerpt, releasedAt, ISBN } = reqBody;
 
         let isUpdateRequired = false
         const updateQuery = {
             $set: {},
             $push: {}
         };
-        
+
         if (isValidName(title)) {
             updateQuery['$set']['title'] = title
             isUpdateRequired = true
@@ -227,12 +221,40 @@ const updateBook = async function(req,res){
         if (!updatedBook) {
             return res.status(404).send({ status: false, message: "Book not found" })
         }
-        return res.status(200).send({ status: true, message: 'Book Updated Successfully', data: updatedBlog })
+        return res.status(200).send({ status: true, message: 'Book Updated Successfully', data: updatedBook })
     }
     catch (error) {
         res.status(500).send({ status: false, message: error.message })
     }
 }
 
-module.exports = { bookById, createBook, getAllBooks,updateBook }
+
+// ------------------- delete by blogId --------------------------------------
+
+const deleteBookBYId = async function (req, res) {
+
+    try {
+        let bookId = req.params.bookId
+
+        if (!isValidId(bookId)) {
+            return res.status(400).send({ status: false, message: "Invalid BookId" });
+        }
+
+        let checkBook = await bookModel.findOne({ _id: bookId, isDeleted: false })
+
+        if (!checkBook) {
+            return res.status(404).send({ status: false, message: 'book not found or already deleted' })
+        }
+
+        let updateBook = await bookModel.findOneAndUpdate({ _id: bookId }, { isDeleted: true, deletedAt: new Date() }, { new: true })
+
+        res.status(200).send({ status: true, message: 'sucessfully deleted' })
+
+    } catch (error) {
+        res.status(500).send({ status: false, error: error.message });
+    }
+}
+
+
+module.exports = { bookById, createBook, getAllBooks, updateBook, deleteBookBYId }
 
