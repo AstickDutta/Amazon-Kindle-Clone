@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const userModel = require('../model/userModel')
 const jwt = require("jsonwebtoken")
-const { isValidTitle, isValidPassword, isValidName, isValidNumber, isValidEmail, isValidBody } = require('../validators/validator')
+const { isValidTitle, isValidPassword, isValidName, isValidNumber, isValidEmail, isValidBody ,isValidPincode} = require('../validators/validator')
 
 
 
@@ -37,26 +37,29 @@ const registerUser = async function (req, res) {
 
         if (address) {
             let valid = Object.keys(address)
-            if (typeof address !== "object" || keys.length == 0) return res.status(400).send({ status: false, message: "Please enter valid address" });
+            if (typeof address !== "object" || valid.length == 0) return res.status(400).send({ status: false, message: "Please enter valid address" });
 
             let fill = valid.filter((element) =>
                 ["street", "city", "pincode"].includes(element));
 
             if (!fill.length)
-                return res.status(400).send({ status: false, message: "Please enter valid field in address" });
+                return res.status(400).send({ status: false, message: "Please enter valid field in address (street,city,pincode)" });
 
+             if(!address.street) return res.status(400).send({ status: false,message :"Street is mandatory"})
             if (address.street) {
-                if (isValidName(address.street))
+                if (!isValidName(address.street))
                     return res.status(400).send({ status: false, message: "Please enter valid Street number" });
             }
 
+            if(!address.city) return res.status(400).send({ status: false,message :"city is mandatory"})
             if (address.city) {
-                if (isValidName(address.city))
+                if (!isValidName(address.city))
                     return res.status(400).send({ status: false, message: "Please enter valid city name" });
             }
 
+            if(!address.pincode) return res.status(400).send({ status: false,message :"pincode is mandatory"})
             if (address.pincode) {
-                if (isValidPincode(address.pincode))
+                if (!isValidPincode(address.pincode))
                     return res.status(400).send({ status: false, message: "Please enter valid Pincode" });
             }
         }

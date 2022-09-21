@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controller/userController')
-// const bookController = require('../controller/bookController')
+const bookController = require('../controller/bookController')
 
 
 
@@ -14,7 +14,11 @@ router.get("/test-me", function (req, res) {
 // ------------ Creating user ------------------------
 router.post("/register",userController.registerUser )
 
+// ------------ login for user ----------------------
 router.post("/login", userController.userLogin)
+
+// ------------ get books by bookId ------------------
+router.get("/books/:bookId", bookController.bookById)
 
 
 module.exports = router

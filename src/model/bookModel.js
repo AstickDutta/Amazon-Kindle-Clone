@@ -1,3 +1,6 @@
+const mongoose = require('mongoose');
+let ObjectId = mongoose.Schema.Types.ObjectId
+
 const booksModel = new mongoose.Schema({
 
     title: {
