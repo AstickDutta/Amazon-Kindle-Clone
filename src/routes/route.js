@@ -20,19 +20,19 @@ router.post("/register",userController.registerUser )
 router.post("/login", userController.userLogin)
 
 // ----------- creating book ------------------------
-router.post("/books", bookController.createBook)
+router.post("/books", auth.authenticate, auth.authorise, bookController.createBook)
 
 // ------------ get book by query filters ------------
-router.get("/books", bookController.getAllBooks)
+router.get("/books",auth.authenticate, bookController.getAllBooks)
 
 // ------------ get books by BookId ------------------
-router.get("/books/:bookId", bookController.bookById)
+router.get("/books/:bookId",auth.authenticate, bookController.bookById)
 
 // ------------ update book by BookId -------------------------
-router.put("/books/:bookId", bookController.updateBook)
+router.put("/books/:bookId",auth.authenticate, auth.authorise, bookController.updateBook)
 
 // ------------- delete by BookId -------------------
-router.delete("/books/:bookId", bookController.deleteBookById)
+router.delete("/books/:bookId",auth.authenticate, auth.authorise, bookController.deleteBookById)
 
 // ------------ creating review -----------------------------
 router.post("/books/:bookId/review",reviewController.createReview )
