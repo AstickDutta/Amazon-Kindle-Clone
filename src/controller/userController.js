@@ -17,13 +17,15 @@ const registerUser = async function (req, res) {
   try {
     let data = req.body;
 
+    // validating request body
     if (!isValidBody(data))
       return res
         .status(400)
         .send({ status: false, message: "All fields are required" });
 
-    const { title, name, phone, email, password, address } = data;
+    const { title, name, phone, email, password, address } = data; //destructure
 
+    // validating title
     if (!title) {
       return res
         .status(400)
@@ -35,65 +37,67 @@ const registerUser = async function (req, res) {
         .send({ status: false, message: "title should be a valid format" });
     }
 
+    // validating name
     if (!name) {
-        return res
-          .status(400)
-          .send({ status: false, message: "name is required " });
-      }
-      if (!isValidName(name.trim())) {
-        return res
-          .status(400)
-          .send({ status: false, message: "name should be a valid format" });
-      }
+      return res
+        .status(400)
+        .send({ status: false, message: "name is required " });
+    }
+    if (!isValidName(name.trim())) {
+      return res
+        .status(400)
+        .send({ status: false, message: "name should be a valid format" });
+    }
 
-      if (!phone) {
-        return res
-          .status(400)
-          .send({ status: false, message: "phone is required " });
-      }
-      if (!isValidNumber(phone)) {
-        return res
-          .status(400)
-          .send({ status: false, message: "phone should be a valid format" });
-      }
-
-
+    // validating phone
+    if (!phone) {
+      return res
+        .status(400)
+        .send({ status: false, message: "phone is required " });
+    }
+    if (!isValidNumber(phone)) {
+      return res
+        .status(400)
+        .send({ status: false, message: "phone should be a valid format" });
+    }
+    // check if phone no already exist
     let validNumber = await userModel.findOne({ phone: phone });
     if (validNumber)
       return res
         .status(400)
         .send({ status: false, message: "This number is already registered" });
 
+    // validating email
     if (!email) {
-        return res
-          .status(400)
-          .send({ status: false, message: "email is required " });
-      }
-      if (!isValidEmail(email.trim())) {
-        return res
-          .status(400)
-          .send({ status: false, message: "email should be a valid format" });
-      }
-
+      return res
+        .status(400)
+        .send({ status: false, message: "email is required " });
+    }
+   if (!isValidEmail(email.trim())) {
+      return res
+        .status(400)
+        .send({ status: false, message: "email should be a valid format" });
+    }
+   // check if phone no already email
     let validEmail = await userModel.findOne({ email: email });
     if (validEmail)
       return res
         .status(400)
         .send({ status: false, message: "This email is already registered" });
 
-        if(!password){
-            return res
-            .status(400)
-            .send({ status: false, message: "password is required" });
-        }
-    if (!isValidPassword(password.trim()))
+      // validating password
+    if (!password) {
       return res
         .status(400)
-        .send({
-          status: false,
-          msg: "password is required and  must contain atleast One UpperCase , One LowerCase , One Numeric Value and One Special Character.",
-        });
+        .send({ status: false, message: "password is required" });
+    }
+    if (!isValidPassword(password.trim()))
+      return res.status(400).send({
+        status: false,
+        msg: "password is required and  must contain atleast One UpperCase , One LowerCase , One Numeric Value and One Special Character.",
+      });
 
+      // validating address
     if (address) {
       let valid = Object.keys(address);
       if (typeof address !== "object" || valid.length == 0)
@@ -106,13 +110,10 @@ const registerUser = async function (req, res) {
       );
 
       if (!fill.length)
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message:
-              "Please enter valid field in address (street,city,pincode)",
-          });
+        return res.status(400).send({
+          status: false,
+          message: "Please enter valid field in address (street,city,pincode)",
+        });
 
       if (!address.street)
         return res
@@ -120,12 +121,10 @@ const registerUser = async function (req, res) {
           .send({ status: false, message: "Street is mandatory" });
       if (address.street) {
         if (!isValidBookTitle(address.street))
-          return res
-            .status(400)
-            .send({
-              status: false,
-              message: "Please enter valid Street number",
-            });
+          return res.status(400).send({
+            status: false,
+            message: "Please enter valid Street number",
+          });
       }
 
       if (!address.city)
@@ -165,6 +164,7 @@ const userLogin = async (req, res) => {
   try {
     let data = req.body;
 
+    // validating request body
     if (!isValidBody(data)) {
       return res
         .status(400)
@@ -176,31 +176,33 @@ const userLogin = async (req, res) => {
         .send({ status: false, message: "email id and password is required " });
     }
 
+    // check whether user is registered or not 
     const checkValidUser = await userModel.findOne({
       email: data.email,
       password: data.password,
     });
 
     if (!checkValidUser) {
-      return res
-        .status(401)
-        .send({
-          status: false,
-          message: "Email Id or password  is not correct",
-        });
+      return res.status(401).send({
+        status: false,
+        message: "Email Id or password  is not correct",
+      });
     }
 
+    // generating token 
     let token = jwt.sign(
       { userId: checkValidUser._id },
       "books_Management_Group_41",
       { expiresIn: "5hr" }
     );
 
+    // setting token in header
     res.setHeader("x-api-key", token);
     return res
       .status(200)
-      .send({ status: true, message: "Successfully Login", data : token });
-  } catch (error) {
+      .send({ status: true, message: "Successfully Login", data: token });
+  } 
+  catch (error) {
     res.status(500).send({ status: false, message: error.message });
   }
 };

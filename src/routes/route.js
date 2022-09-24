@@ -23,10 +23,10 @@ router.post("/login", userController.userLogin)
 router.post("/books", auth.authenticate, auth.authorise, bookController.createBook)
 
 // ------------ get book by query filters -------------------------------------------
-router.get("/books",auth.authenticate, bookController.getAllBooks)
+router.get("/books", bookController.getAllBooks)
 
 // ------------ get books by BookId --------------------------------------------------
-router.get("/books/:bookId",auth.authenticate, bookController.bookById)
+router.get("/books/:bookId", bookController.bookById)
 
 // ------------ update book by BookId -------------------------------------------------
 router.put("/books/:bookId",auth.authenticate, auth.authorise, bookController.updateBook)
