@@ -51,7 +51,7 @@ const registerUser = async function (req, res) {
           .status(400)
           .send({ status: false, message: "phone is required " });
       }
-      if (!isValidNumber(phone.trim())) {
+      if (!isValidNumber(phone)) {
         return res
           .status(400)
           .send({ status: false, message: "phone should be a valid format" });
@@ -193,13 +193,13 @@ const userLogin = async (req, res) => {
     let token = jwt.sign(
       { userId: checkValidUser._id },
       "books_Management_Group_41",
-      { expiresIn: "1hr" }
+      { expiresIn: "5hr" }
     );
 
     res.setHeader("x-api-key", token);
     return res
       .status(200)
-      .send({ status: true, message: "Successfully Login", data: token });
+      .send({ status: true, message: "Successfully Login", data : token });
   } catch (error) {
     res.status(500).send({ status: false, message: error.message });
   }

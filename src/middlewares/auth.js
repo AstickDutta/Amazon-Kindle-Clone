@@ -38,6 +38,7 @@ const authorise = async (req, res, next) => {
         let loggedInUser = req.token.bookId   //person who is loggedIn (has token)
 
         if (loggedInUser != bookId) return res.status(403).send({ status: false, msg: "You are not authorised for this operation" })
+        next()
     }
     catch (error) {
         res.status(500).send({ message: error.message })

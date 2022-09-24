@@ -7,7 +7,7 @@ const isValid = function (value){
   return true 
 }
 
-const isValidBody = function (data) {
+const isValidBody = function (data) { 
     return Object.keys(data).length > 0;
   }
 
@@ -20,7 +20,7 @@ const isValidPassword = function (password) {
 }
 
 const isValidBookTitle = function(title){
-  return (/^[A-Za-z]{1,35}/.test(title))
+  return (/^[A-Za-z]{1,35}/i.test(title))
 }
 
 const isValidName = function(name){
@@ -56,11 +56,14 @@ const isValidName = function(name){
         }
       };
       
+      const isValidRating = function(rating){
+        if (!/^\s*([1-5]){1}\s*$/.test(rating)) return false
+        return true
+      }
 
 
 
 
 
 
-
-module.exports = {isValid, isValidBody, isValidTitle ,isValidBookTitle,isValidPassword, isValidName, isValidNumber, isValidId, isValidISBN,isValidReleasedAt ,isValidPincode, isValidEmail} 
+module.exports = {isValid, isValidBody, isValidTitle ,isValidBookTitle,isValidPassword, isValidName, isValidNumber, isValidId, isValidISBN,isValidReleasedAt ,isValidPincode, isValidEmail,isValidRating} 

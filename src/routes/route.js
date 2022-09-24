@@ -13,32 +13,34 @@ router.get("/test-me", function (req, res) {
 })
 
 
-// ------------ Creating user ------------------------
+// ------------ Creating user ------------------------------------------------------
 router.post("/register",userController.registerUser )
 
-// ------------ login for user ----------------------
+// ------------ login for user -----------------------------------------------------
 router.post("/login", userController.userLogin)
 
-// ----------- creating book ------------------------
+// ----------- creating book --------------------------------------------------------
 router.post("/books", auth.authenticate, auth.authorise, bookController.createBook)
 
-// ------------ get book by query filters ------------
+// ------------ get book by query filters -------------------------------------------
 router.get("/books",auth.authenticate, bookController.getAllBooks)
 
-// ------------ get books by BookId ------------------
+// ------------ get books by BookId --------------------------------------------------
 router.get("/books/:bookId",auth.authenticate, bookController.bookById)
 
-// ------------ update book by BookId -------------------------
+// ------------ update book by BookId -------------------------------------------------
 router.put("/books/:bookId",auth.authenticate, auth.authorise, bookController.updateBook)
 
-// ------------- delete by BookId -------------------
+// ------------- delete by BookId -----------------------------------------------------
 router.delete("/books/:bookId",auth.authenticate, auth.authorise, bookController.deleteBookById)
 
-// ------------ creating review -----------------------------
+// ------------ creating review --------------------------------------------------------
 router.post("/books/:bookId/review",reviewController.createReview )
 
-// ------------ updating review -----------------------------
+// ------------ updating review --------------------------------------------------------
 router.put("/books/:bookId/review/:reviewId",reviewController.updateReview)
 
+// ------------ delelte review by reviewId and bookId -----------------------------------
+router.delete("/books/:bookId/review/:reviewId", reviewController.reviewDeleteById)
 
 module.exports = router

@@ -240,7 +240,7 @@ const bookById = async function (req, res) {
     book.reviewsData = result;
 
     return res
-      .status(400)
+      .status(200)
       .send({ status: true, message: "Book details", data: book });
   } catch (error) {
     res.status(500).send({ status: false, message: error.message });
