@@ -80,12 +80,7 @@ const createReview = async function (req, res) {
     let updatedBook = await bookModel
       .findByIdAndUpdate(
         { _id: bookId },
-        {
-          $set: {
-            reviews: +1 ,
-            reviewedAt: new Date(),
-          },
-        },
+        { $inc: { reviews: +1 }, reviewedAt: new Date() },
         { new: true }
       )
       .lean();
@@ -98,7 +93,7 @@ const createReview = async function (req, res) {
 
     // set reviewData inside book document
     updatedBook["reviewsData"] = saveData;
-    console.log(updatedBook)
+    console.log(updatedBook);
 
     return res.status(201).send({
       status: true,
@@ -261,10 +256,9 @@ const reviewDeleteById = async (req, res) => {
     // console.log(book)
     book = await bookModel.findOneAndUpdate(
       { _id: bookId },
-      { $set: { $inc: { reviews: +5 } } }
+      { $inc: { reviews: -1 } },
+      { new: true }
     );
-
-    console.log("hi", book);
 
     return res.status(200).send({ status: true, message: "Review is deleted" });
   } catch (err) {
