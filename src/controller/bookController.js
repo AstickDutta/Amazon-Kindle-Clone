@@ -228,14 +228,18 @@ const bookById = async function (req, res) {
         .status(400)
         .send({ status: false, message: "Invalid bookId!" });
 
-    let book = await bookModel.findOne({ _id: bookId, isDeleted: false });
+    let book = await bookModel
+      .findOne({ _id: bookId, isDeleted: false })
+      .lean();
     if (!book)
       return res
-        .status(400)
+        .status(404)
         .send({ status: false, message: "No book with this bookId exists" });
 
     // fetch
-    let result = await reviewModel.find({ bookId: bookId, isDeleted: false });
+    let result = await reviewModel
+      .find({ bookId: bookId, isDeleted: false })
+      .select({ isDeleled: 0, createdAt: 0, updatedAt: 0 });
 
     book.reviewsData = result;
 
@@ -262,7 +266,7 @@ const updateBook = async function (req, res) {
         .send({ status: false, message: "Invalid book id" });
     }
 
-    let book = await bookModel.findOne({ _id: bookId });
+    let book = await bookModel.findOne({ _id: bookId ,isDeleted : true});
     if (!book)
       return res
         .status(400)
@@ -323,14 +327,6 @@ const updateBook = async function (req, res) {
           .send({ status: false, message: "excerpt should be a valid format" });
     }
 
-    //  search book document by given bookId
-    let bookData = await bookModel.findById(bookId);
-
-    // check for book document isn't deleted
-    if (bookData.isDeleted == true)
-      return res
-        .status(404)
-        .send({ status: false, message: "book is already deleted" });
 
     // update book document
     let updateBook = await bookModel.findOneAndUpdate(
@@ -362,7 +358,7 @@ const deleteBookById = async function (req, res) {
   try {
     let bookId = req.params.bookId;
 
-    // validating bookId 
+    // validating bookId
 
     if (!isValidId(bookId)) {
       return res.status(400).send({ status: false, message: "Invalid BookId" });
@@ -390,8 +386,7 @@ const deleteBookById = async function (req, res) {
     return res
       .status(200)
       .send({ status: true, message: "sucessfully deleted" });
-  } 
-  catch (error) {
+  } catch (error) {
     res.status(500).send({ status: false, error: error.message });
   }
 };

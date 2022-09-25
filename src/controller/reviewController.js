@@ -80,24 +80,26 @@ const createReview = async function (req, res) {
       { _id: bookId },
       {
         $set: {
-          review: review + 1,
+          reviews: +1,
           reviewedAt: new Date(),
         },
       },
       { new: true }
-    );
+    ).lean();
 
     // creating review document
     let saveData = await reviewModel.create(data);
 
     // adding bookId to review document
-
     saveData.bookId = bookId;
+
+    // set reviewData inside book document
+    updatedBook["reviewsData"] = saveData
 
     return res.status(201).send({
       status: true,
       message: "Review created successfully",
-      data: saveData,
+      data: updatedBook,
     });
   } catch (error) {
     res.status(500).send({ error: error.message });

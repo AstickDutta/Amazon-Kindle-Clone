@@ -11,6 +11,7 @@ const {
   isValidBody,
   isValidPincode,
   isValidBookTitle,
+  isValid,
 } = require("../validators/validator");
 
 const registerUser = async function (req, res) {
@@ -31,10 +32,10 @@ const registerUser = async function (req, res) {
         .status(400)
         .send({ status: false, message: "title is required " });
     }
-    if (!isValidTitle(title.trim())) {
+    if (!isValid(title) || !isValidTitle(title)) {
       return res
         .status(400)
-        .send({ status: false, message: "title should be a valid format" });
+        .send({ status: false, message: "title should be a valid format-Mr, Mrs, Miss" });
     }
 
     // validating name
@@ -58,7 +59,7 @@ const registerUser = async function (req, res) {
     if (!isValidNumber(phone)) {
       return res
         .status(400)
-        .send({ status: false, message: "phone should be a valid format" });
+        .send({ status: false, message: "Enter valid phone number" });
     }
     // check if phone no already exist
     let validNumber = await userModel.findOne({ phone: phone });
@@ -76,7 +77,7 @@ const registerUser = async function (req, res) {
    if (!isValidEmail(email.trim())) {
       return res
         .status(400)
-        .send({ status: false, message: "email should be a valid format" });
+        .send({ status: false, message: "Enter valid emailId" });
     }
    // check if phone no already email
     let validEmail = await userModel.findOne({ email: email });
@@ -94,7 +95,7 @@ const registerUser = async function (req, res) {
     if (!isValidPassword(password.trim()))
       return res.status(400).send({
         status: false,
-        msg: "password is required and  must contain atleast One UpperCase , One LowerCase , One Numeric Value and One Special Character.",
+        msg: "Password must contain (8-15) characters, atleast One UpperCase , One LowerCase , One Numeric Value and One Special Character.",
       });
 
       // validating address
@@ -193,7 +194,7 @@ const userLogin = async (req, res) => {
     let token = jwt.sign(
       { userId: checkValidUser._id },
       "books_Management_Group_41",
-      { expiresIn: "5hr" }
+      { expiresIn: "1h" }
     );
 
     // setting token in header
