@@ -20,7 +20,7 @@ router.post("/register",userController.registerUser )
 router.post("/login", userController.userLogin)
 
 // ----------- creating book --------------------------------------------------------
-router.post("/books", auth.authenticate, auth.authorise, bookController.createBook)
+router.post("/books", auth.authenticate, bookController.createBook)
 
 // ------------ get book by query filters -------------------------------------------
 router.get("/books", bookController.getAllBooks)

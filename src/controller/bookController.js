@@ -71,6 +71,13 @@ const createBook = async (req, res) => {
         .status(400)
         .send({ status: false, message: "Please enter valid userId" });
 
+    //checking authorization
+
+    if (req.decoded.userId != userId)
+      return res
+        .status(403)
+        .send({ status: false, msg: "you are not authorised" });
+
     // search for a valid user
     let checkUser = await userModel.findOne({ _id: userId });
     if (!checkUser)
@@ -198,6 +205,7 @@ const getAllBooks = async function (req, res) {
         excerpt: 1,
         userId: 1,
         category: 1,
+        subcategory: 1,
         reviews: 1,
         releasedAt: 1,
       })
@@ -266,7 +274,7 @@ const updateBook = async function (req, res) {
         .send({ status: false, message: "Invalid book id" });
     }
 
-    let book = await bookModel.findOne({ _id: bookId ,isDeleted : true});
+    let book = await bookModel.findOne({ _id: bookId, isDeleted: true });
     if (!book)
       return res
         .status(400)
@@ -327,10 +335,9 @@ const updateBook = async function (req, res) {
           .send({ status: false, message: "excerpt should be a valid format" });
     }
 
-
     // update book document
     let updateBook = await bookModel.findOneAndUpdate(
-      { isDeleled: false },
+      { _id: bookId, isDeleled: false },
       {
         $set: {
           title: title,

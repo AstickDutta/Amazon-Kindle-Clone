@@ -23,7 +23,7 @@ const isValidPassword = function (password) {
 };
 
 const isValidBookTitle = function (title) {
-  return /^[A-Za-z]{1,35}/i.test(title);
+  return /^[A-Za-z ,.'-]{1,45}/i.test(title);
 };
 
 const isValidName = function (name) {

@@ -6,6 +6,7 @@ const {
   isValidName,
   isValidBody,
   isValid,
+  isValidBookTitle,
 } = require("../validators/validator");
 
 const createReview = async function (req, res) {
@@ -76,16 +77,18 @@ const createReview = async function (req, res) {
         message: "rating should be number from 1-5 !!",
       });
 
-    let updatedBook = await bookModel.findOneAndUpdate(
-      { _id: bookId },
-      {
-        $set: {
-          reviews: +1,
-          reviewedAt: new Date(),
+    let updatedBook = await bookModel
+      .findByIdAndUpdate(
+        { _id: bookId },
+        {
+          $set: {
+            reviews: +1 ,
+            reviewedAt: new Date(),
+          },
         },
-      },
-      { new: true }
-    ).lean();
+        { new: true }
+      )
+      .lean();
 
     // creating review document
     let saveData = await reviewModel.create(data);
@@ -94,7 +97,8 @@ const createReview = async function (req, res) {
     saveData.bookId = bookId;
 
     // set reviewData inside book document
-    updatedBook["reviewsData"] = saveData
+    updatedBook["reviewsData"] = saveData;
+    console.log(updatedBook)
 
     return res.status(201).send({
       status: true,
@@ -171,11 +175,13 @@ const updateReview = async (req, res) => {
     }
 
     // validating rating
-    if (typeof rating != "number" || rating < 1 || rating > 5)
-      return res.status(400).send({
-        status: false,
-        message: "rating should be number from 1-5 !!",
-      });
+    if (rating) {
+      if (typeof rating != "number" || rating < 1 || rating > 5)
+        return res.status(400).send({
+          status: false,
+          message: "rating should be number from 1-5 !!",
+        });
+    }
 
     // validating review
     if (!isValid(review))
@@ -183,7 +189,7 @@ const updateReview = async (req, res) => {
         .status(400)
         .send({ status: false, message: "please enter review" });
 
-        // you CAN'T update review at timing
+    // you CAN'T update review at timing
     if (isValid(reviewedAt))
       return res
         .status(400)
@@ -198,7 +204,7 @@ const updateReview = async (req, res) => {
             reviewedBy: reviewedBy,
             rating: rating,
             review: review,
-            reviewedAt: new Date()
+            reviewedAt: new Date(),
           },
         },
         { new: true }
@@ -249,14 +255,16 @@ const reviewDeleteById = async (req, res) => {
     if (data.matchedCount === 0)
       return res
         .status(404)
-        .send({ status: false, message: "Review Not exist" });
+        .send({ status: false, message: "Review does not exist" });
 
     //updating number of reviews of reviews in book collection
-
+    // console.log(book)
     book = await bookModel.findOneAndUpdate(
       { _id: bookId },
-      { $inc: { reviews: -1 } }
+      { $set: { $inc: { reviews: +5 } } }
     );
+
+    console.log("hi", book);
 
     return res.status(200).send({ status: true, message: "Review is deleted" });
   } catch (err) {
