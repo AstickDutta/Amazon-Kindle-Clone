@@ -274,11 +274,16 @@ const updateBook = async function (req, res) {
         .send({ status: false, message: "Invalid book id" });
     }
 
-    let book = await bookModel.findOne({ _id: bookId, isDeleted: true });
+    let book = await bookModel.findOne({ _id: bookId });
     if (!book)
       return res
         .status(400)
         .send({ status: false, message: "No Books exits with this bookId" });
+
+    if (book.isDeleted == true)
+      return res
+        .status(404)
+        .send({ status: false, message: "Book document already deleted" });
 
     // validating request body
 

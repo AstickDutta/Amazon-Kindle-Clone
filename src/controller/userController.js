@@ -121,7 +121,7 @@ const registerUser = async function (req, res) {
           .status(400)
           .send({ status: false, message: "Street is mandatory" });
       if (address.street) {
-        if (!isValidBookTitle(address.street))
+        if (!isValid(address.street))
           return res.status(400).send({
             status: false,
             message: "Please enter valid Street number",

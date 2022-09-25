@@ -93,7 +93,6 @@ const createReview = async function (req, res) {
 
     // set reviewData inside book document
     updatedBook["reviewsData"] = saveData;
-    console.log(updatedBook);
 
     return res.status(201).send({
       status: true,
