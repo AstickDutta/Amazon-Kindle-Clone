@@ -9,6 +9,8 @@ const {
   isValidBookTitle,
 } = require("../validators/validator");
 
+//==================================================== creating review ===========================================================//
+
 const createReview = async function (req, res) {
   try {
     let data = req.body;
@@ -33,7 +35,7 @@ const createReview = async function (req, res) {
         .status(400)
         .send({ status: false, message: "BookId is mandatory" });
 
-    console.log(bookId);
+    
     if (!isValidId(bookId))
       return res
         .status(400)
@@ -104,7 +106,8 @@ const createReview = async function (req, res) {
   }
 };
 
-// -------------------- update review ------------------------------------------
+
+//==================================================== update review ===========================================================//
 
 const updateReview = async (req, res) => {
   try {
@@ -217,7 +220,7 @@ const updateReview = async (req, res) => {
   }
 };
 
-// --------------------- delete review by reviewId ----------------------------------
+//==================================================== review Delete By Id ===========================================================//
 
 const reviewDeleteById = async (req, res) => {
   try {

@@ -19,9 +19,7 @@ const authenticate = async (req, res, next) => {
     jwt.verify(token, "books_Management_Group_41", (err, decoded) => {
       if (err) {
         let message =
-          err.message === "jwt expired"
-            ? "token is expired"
-            : "token is invalid";
+          err.message === "jwt expired" ? "token is expired" : "token is invalid";
 
         return res.status(401).send({ status: false, message: message });
       }

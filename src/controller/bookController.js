@@ -12,7 +12,8 @@ const {
   isValid,
 } = require("../validators/validator");
 
-// ------------------- creating book -----------------------------------
+//==================================================== creating Books ===========================================================//
+
 const createBook = async (req, res) => {
   try {
     // Validating request body
@@ -150,7 +151,8 @@ const createBook = async (req, res) => {
   }
 };
 
-//Get All Books==================================by kusum ============================================
+//====================================================Get All Books===========================================================//
+
 const getAllBooks = async function (req, res) {
   try {
     let field = req.query;
@@ -224,7 +226,7 @@ const getAllBooks = async function (req, res) {
   }
 };
 
-// ---------------- get book by Id-------------------------------------------
+//==================================================== get book by Id ===========================================================//
 
 const bookById = async function (req, res) {
   try {
@@ -259,7 +261,7 @@ const bookById = async function (req, res) {
   }
 };
 
-// ---------------------- Update by BookId ------------------------------------------------
+//==================================================== update book by Id ===========================================================//
 
 const updateBook = async function (req, res) {
   try {
@@ -364,7 +366,7 @@ const updateBook = async function (req, res) {
   }
 };
 
-// ------------------- delete by blogId --------------------------------------
+//==================================================== delete book by Id ===========================================================//
 
 const deleteBookById = async function (req, res) {
   try {

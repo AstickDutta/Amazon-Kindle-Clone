@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const userModel = require("../model/userModel");
 const jwt = require("jsonwebtoken");
 
@@ -10,9 +9,10 @@ const {
   isValidEmail,
   isValidBody,
   isValidPincode,
-  isValidBookTitle,
   isValid,
 } = require("../validators/validator");
+
+//==================================================== creating user ===========================================================//
 
 const registerUser = async function (req, res) {
   try {
@@ -24,7 +24,7 @@ const registerUser = async function (req, res) {
         .status(400)
         .send({ status: false, message: "All fields are required" });
 
-    const { title, name, phone, email, password, address } = data; //destructure
+    const { title, name, phone, email, password, address } = data;
 
     // validating title
     if (!title) {
@@ -160,6 +160,8 @@ const registerUser = async function (req, res) {
     res.status(500).send({ status: false, message: error.message });
   }
 };
+
+//==================================================== user Login ===========================================================//
 
 const userLogin = async (req, res) => {
   try {

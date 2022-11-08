@@ -5,7 +5,7 @@ const { default: mongoose } = require('mongoose');
 const app = express();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+
 
 
 mongoose.connect("mongodb+srv://kusum_99:9vJ9mxlJH1cYZ1oO@cluster0.jelghm1.mongodb.net/book-managment-db", {
